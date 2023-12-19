@@ -1,0 +1,650 @@
+#### Matrix 配置 - checks.yml ####################################################
+#     本翻译由kxkl(Q号198095872)如有翻译问题，不要骂我们QAQ
+#     嗨，欢迎使用 Matrix 反作弊，这是check.yml, 用于定义每次检查的设置和行为。
+#  你可以在这里设置每次检查的参数，也可以定义每次检查检测到玩家作弊后如何执行操作。
+#
+#  注意!如果您遇到任何误报和绕过，您应该首先考虑报告此BUG。
+#  调整配置文件并不能真正解决误报和绕过问题!
+#
+#  - 什么是 "VL"?
+#        “VL”是“违规级别”的缩写. 当玩家被反作弊标记为作弊时，反作弊会提高玩家的违规级别。
+#    当玩家的VL达到下面“命令”节点中的值时，将执行相应的命令。
+#
+#  无论如何，感谢使用 Matrix 反作弊!?
+#
+#####################################################################################
+
+## KillAura
+# 阻止玩家使用KillAura/AimBot攻击
+killaura:
+  # 启用KillAura检查?
+  enable: true
+
+  # Matrix 中各种KillAura检查模块列表
+  modules:
+    # 检查玩家在战斗中是否有问题
+    flaw:
+      type_a:
+        enable: true
+        vl: 3
+      type_b:
+        enable: true
+        vl: 10
+      type_c:
+        enable: true
+        vl: 10
+      type_d:
+        enable: true
+        vl: 10
+      type_e:
+        enable: true
+        vl: 5
+    # 检查玩家是否表现出类似于aimbot的瞄准特征
+    aimbot:
+      vl_weight: 7
+      cancel_hit: true
+
+      check_aimbot_sync: true
+      check_aimbot_shake: true
+      check_aimbot_snap: true
+      check_aimbot_sensitivity: true
+      check_aimbot_acceleration: true
+      check_aimbot_bad_rotation: true
+      check_aimbot_mouse_speed: true
+
+    # KillAura NPC检查，它会在玩家后面生成一个假玩家来检测
+    # 如果玩家使用KillAura，别担心，玩家只能看到自己的NPC
+    npc:
+      enable: true
+      vl_weight: 5
+
+      # NPC的位置计算是否应该异步运行，因为这可能会消耗一些资源
+      async: true
+
+      # npc应该使用真实的实体id而不是随机生成?
+      # 一些作弊客户端可以绕过随机实体ID
+      real_entity_id: true
+
+      # NPC是否仅由命令生成?如果设置为false, NPC将在玩家战斗时自动生成。
+      # 如果设置为true，你只能通过“matrix npc”命令为玩家生成NPC。(默认值：true)
+      only_command_trigger: true
+
+      # 玩家是否应该看到这个NPC?(true=可见)
+      visible: true
+
+      # 强制随机名称(默认值:false)
+      # 如果开启此选项，Matrix生成的NPC将强制使用随机名称，而不是在线玩家的随机名称，
+      # 这可以解决一些客户端绕过“重复”名称NPC的问题。但是Matrix不会对随机命名的NPC应用团队，
+      # 你可能需要自己使用API来应用NPC团队，否则，一些客户端会根据NPC名称是否有颜色来绕过
+      force_random_name: false
+
+      # NPC存在时间设置(tick)
+      check_ticks:
+        base: 100
+        attack_add: 20
+        hit_bot_add: 50
+
+      # NPC动作设置
+      movement:
+        distance_base: 3.2
+        distance_random_size: 0.75
+        distance_attack_base: 3.0
+        move_up_after_attack: false
+
+    # 暴击检查，防止玩家进行异常暴击攻击
+    critical:
+      # 启用该模块?
+      enable: true
+
+      # 玩家在被这个模块标记后应该得到多少VL ?
+      vl_weight: 5
+
+    # 扫射检查
+    strafe:
+      enable: true
+      vl_weight: 3
+      cancel_move: true
+
+    # 结合检查
+    combine:
+      aimbot_with_reach:
+        time: 5000
+        condition:
+          - 'ka.abt.magic'
+          - 'hb.reach'
+          - 'hb.reach'
+        action: 5 # +5 VL
+
+  # 自定义vl衰减间隔(秒)和vl衰减步长
+  decay:
+    interval: 15
+    amount: 5
+
+  # 违反阈值
+  # 违规次数:
+  commands:
+    10: 'matrix npc %player% 100'
+    20: 'matrix notify %player% 可能会使用战斗黑客(杀戮光环)'
+    35: 'matrix notify %player% 正在使用战斗黑客(杀戮光环) #2'
+    45: 'ban %player% 1h 杀戮光环'
+
+## HitBox
+# 描述:这个检查可以防止玩家使用HitBox, Angle, Reach hacks。
+hitbox:
+  # 启用HitBox检查?
+  enable: true
+
+  # 最大到达距离(默认:3.15)
+  max_reach: 3.05
+
+  # 计算碰撞箱时回溯的刻度长度
+  trace_back_length: 8
+
+  # Matrix是否应该在检测到玩家作弊后取消玩家的攻击?
+  # 有这些选择:
+  #  1. none   -  什么都不做
+  #  2. silent -  设置伤害为零(推荐)
+  #  3. cancel -  取消攻击
+  cancel_way: cancel
+
+  # 违规行为需要取消非法点击
+  cancel_vl: 5
+
+  # 违反权重
+  vl_weights:
+    miss_player_hitbox: 2
+    reach_target_standing: 10
+    reach_target_moving: 3
+
+  # 是否应该启用动态VL权重?
+  # 如果启用，VL重量将根据玩家的范围计算
+  # 例如，玩家在使用3.2 reach时获得1vl，而在使用5.0 reach时获得19vl
+  # 如果启用该函数，则“reach_target_standing”和“reach_target_moving”将不再生效
+  # 注:动态VL = (current_reach - max_reach) *扩展器
+  dynamic_vl:
+    enable: true
+    expander: 10
+    min_vl: 3
+    max_vl: 8
+
+  # 短时间内VL的最大增加是多少?
+  # 由于网络连接的不稳定性，当出现延迟峰值时，HitBox检测可能会引起假警报
+  # 这个选项限制了VL在“5秒”内的最大增加
+  max_burst_vl: 15
+
+  # 自定义vl衰减间隔(秒)和vl衰减步长
+  decay:
+    interval: 15
+    amount: 5
+
+  # 违反阈值
+  # 违规次数:
+  commands:
+    10: 'matrix notify %player% 试图到达最大距离以外的实体(HitBox)'
+    12: 'matrix npc %player% 120'
+    15: 'matrix notify %player% 试图到达最大距离以外的实体(HitBox) #2'
+    24: 'ban %player% 1h 达到/ HitBox黑客'
+
+## 点击检测
+# 防止玩家过快点击，或使用自动点击器攻击其他实体
+click:
+  # 启用这个检查?
+  enable: true
+
+  # 玩家的最高CPS应该是多少?当玩家超过这个cps时，它将被检测到
+  max_cps: 15
+
+  # 模块
+  check_cps: true
+  check_swing: true
+  check_timing: true
+
+  # 当检测到cps过高时，是否根据cps动态调整vl权重?
+  # 这意味着玩家的cps越高，当发现作弊时，VL就越高
+  dynamic_cps_vl_weight: true
+
+  # 点击间隔缓冲区大小(不要碰它!!)
+  buffer_size: 20
+
+  # 自定义vl衰减间隔(秒)和vl衰减步长
+  decay:
+    interval: 15
+    amount: 5
+
+  # 违反阈值
+  # 违规次数:
+  commands:
+    10: 'matrix notify %player% 尝试异常点击(点击)#1'
+    18: 'matrix notify %player% 尝试点击异常(点击) #2'
+    30: 'ban %player% 1h 点击异常'
+
+## 移动速度检查
+# 这种检查可以防止玩家异常移动
+move:
+  # 启用这个检查?
+  enable: true
+
+  # Matrix应该阻止NoSlow作弊吗?
+  check_noslow: true
+
+  # 当玩家到达这个VL时，开始拉回玩家的异常移动
+  cancel_vl: 35
+
+  # 当玩家受到挫折时，Matrix是否应该对玩家施加伤害?
+  apply_damage: true
+
+  # Matrix是否允许玩家站在取消的方块上?
+  # 我建议不要打开它，它会稍微影响性能
+  # 造成了一些旁路。
+  # https://www.youtube.com/watch?v=9lNXNW6Phk0&t=133s
+  allow_bpe_bridge: false
+
+  # Matrix是否应该检查有飞行能力的玩家的速度?
+  # 这可能会导致一些“PvP客户端”的飞行能力受到限制
+  check_flying_players: false
+
+  # 如果Matrix认为玩家一定在作弊，Matrix就会忽略
+  # 当前的VL和直接挫折玩家。但这并不是100%准确.
+  # 所以你可以选择哪些情境Matrix会迫使玩家受挫
+  force_setback_situations:
+    high_jump: true
+    ground_spoof_jump: true
+    bad_jumps: true
+    air_accel: true
+    air_mdf: true
+    step: true
+
+  # 如果玩家在虚空中作弊，Matrix是否应该将玩家传送到虚空中?
+  allow_setback_to_void: true
+
+  # 自定义vl衰减间隔(秒)和vl衰减步长
+  decay:
+    interval: 10
+    amount: 45
+
+  # 违反阈值
+  # 违规次数:""
+  commands:
+    55: 'matrix notify %player% 试图不正常地移动(移动) #1'
+    90: 'matrix notify %player% 试图不正常地移动(移动) #2'
+    220: 'ban %player% 1h 移动异常'
+
+## 坏的数据包
+# 防止玩家发送太多的移动包或发送非法包
+badpackets:
+  # 启用这个检查?
+  enable: true
+
+  # 定时器检查设置
+  timer:
+    # 用旧计时器来检查?它更稳定，但更弱(不推荐)
+    use_legacy_timer_check: false
+
+    # 最小计时器平衡值(节拍)
+    # 这个值越低，误报就越少，但这也意味着更容易绕过
+    min_balance: -15.0
+
+    # 加速计时器检查
+    # 如果玩家的数据包间隔呈现恒定趋势.
+    # 加速余额的增长，这样计时器可以更快的被检测到
+    accelerate_timer_check: true
+
+  # 自定义vl衰减间隔(秒)和vl衰减步长
+  decay:
+    interval: 15
+    amount: 25
+
+  # 违反阈值
+  # 违规次数:
+  commands:
+    100: 'matrix notify %player% 向服务器发送异常数据包(BadPackets) #1'
+    150: 'matrix notify %player% 向服务器发送异常数据包(BadPackets) #2'
+    240: 'ban %player% 1h 发送异常数据包'
+
+## 延迟检查
+# 它会阻止玩家加速某些行动，如快速进食或快速治疗
+delay:
+  # 启用这个检查?
+  enable: true
+
+  # 当检测到作弊时，Matrix是否应该阻止玩家的行为?
+  cancel_action: true
+
+  # 模块列表
+  # 您可以定义每个模块的VL权重，并且-1等于禁用它
+  check_healing: 1
+  check_using_items: 1
+  check_using_bow: 1
+  check_auto_splash: 2
+  check_inventory_action: 1
+  check_auto_totem: 1
+  check_fast_throw: 1
+
+  # 自定义vl衰减间隔(秒)和vl衰减步长
+  decay:
+    interval: 15
+    amount: 2
+
+  # 违反阈值
+  # 违规次数:
+  commands:
+    3: 'matrix notify %player% 试图加速动作(延迟) #1'
+    5: 'matrix notify %player% 试图加速动作(延迟) #2'
+    10: 'ban %player% 1h 不公平客户端(加速动作)'
+
+## 块
+# 检查防止玩家打破，放置迅速格挡
+block:
+  # 启用这个检查?
+  enable: true
+
+  # 违规需要取消非法破坏/放置区块(-1 =永不取消)
+  cancel_vl: 5
+
+  # 模块列表
+  # 你可以关闭一些模块
+  modules:
+    # 它可以更快地检测到玩家断块
+    fastbreak:
+      enable: true
+      vl_weight: 4
+    # 它可以检测玩家放置块更快
+    fastplace:
+      enable: true
+      vl_weight: 1
+      max_place_per_second: 9
+    # 无需挥杆，即可检测玩家放置方块
+    noswing:
+      enable: true
+      vl_weight: 1
+    # 检测到玩家没有发送中断数据包
+    abort:
+      enable: true
+      vl_weight: 0
+
+  # Custom vl decay interval(seconds) and vl decay step size
+  decay:
+    interval: 15
+    amount: 8
+
+  # Violation Thresholds
+  # 违规次数:
+  commands:
+    10: 'matrix notify %player% 试图过快地放置/打破一个方块(快速放置/快攻)'
+    20: 'ban %player% 1h FastPlace /快攻黑客'
+
+## 脚手架检查
+# 检查阻止玩家桥接方块或比正常速度更快
+scaffold:
+  # 启用此检查
+  enable: true
+
+  # 取消VL
+  cancel_vl: 15
+
+  # Modules
+  modules:
+    # 它可以更快地检测到玩家桥接
+    place:
+      enable: true
+      vl_weight: 7
+      check_jump: true
+
+    # 防止玩家过桥太快
+    delay:
+      enable: true
+      vl_weight: 5
+      cancel_place: true
+      min_delay: 6
+      min_delay_diagonal: 3
+
+    # 防止玩家快速右击
+    right_cps:
+      enable: true
+      vl_weight: 5
+      max_cps: 29
+
+    # 它可以更快地探测到玩家
+    tower:
+      enable: true
+      vl_weight: 2
+
+  # 自定义vl衰减间隔(秒)和vl衰减步长
+  decay:
+    interval: 15
+    amount: 6
+
+  # 违反阈值
+  # 违规次数:
+  commands:
+    10: 'matrix notify %player% 试图自动搭路(自动搭路)'
+    15: 'matrix notify %player% 试图自动搭路(自动搭路) #2'
+    24: 'ban %player% 1h 自动搭路/塔'
+
+## Jesus
+# 防止玩家在液体中过快移动或在液体上行走。
+jesus:
+  # 启用这个检查?
+  enable: true
+
+  # 违规行为需要取消非法移动(-1 =永不取消)
+  cancel_vl: 15
+
+  # Matrix是否应该忽略玩家是否在游泳?
+  # 该特性可以防止游泳状态不同步
+  ignore_swim_pose: false
+
+  # 自定义vl衰减间隔(秒)和vl衰减步长
+  decay:
+    interval: 10
+    amount: 10
+
+  # 违反阈值
+  # 违规次数:
+  commands:
+    20: 'matrix notify %player% 试图在液体中非法移动 (Jesus)'
+    40: 'matrix notify %player% 试图在液体中非法移动 (Jesus) #2'
+    50: 'ban %player% 1h 检测到不公平客户端(非法移动)'
+
+## 速度
+# 检查阻止玩家使用任何类型的反击退技巧。
+velocity:
+  # 启用这个检查?
+  enable: true
+
+  # 等待玩家对速度做出反应的时间(速度)
+  # 如果玩家在此之后没有对速度做出反应
+  # 时间一长，玩家就会被发现。
+  wait_time: 20
+
+  # 忽略滞后玩家，这个功能可以忽略玩家谁
+  # 正在延迟或更改资源包
+  ignore_lag: true
+
+  # 速度检查模块的VL权重(-1 =禁用)
+  modules:
+    respond: 5
+    analyser: 3
+    vertical: 1
+
+  # 自定义vl衰减间隔(秒)和vl衰减步长
+  decay:
+    interval: 15
+    amount: 3
+
+  # 违反阈值
+  # 违规次数:
+  commands:
+    10: 'matrix notify %player% 试图忽略服务器速度(velocity)'
+    15: 'matrix notify %player% 试图忽略服务器速度(velocity) #2'
+    20: 'ban %player% 2h 速度/ Anti-Knockback'
+
+## Spam
+# 检查可以防止玩家在服务器聊天中发送垃圾信息
+chat:
+  # 启用这个检查?
+  enable: true
+
+  # 消息之间的最短时间(秒)
+  min_time: 3
+
+  # 取消发送的消息需要违反规则(-1 =永不取消)
+  cancel_vl: 3
+
+  # Custom vl decay interval(seconds) and vl decay step size
+  decay:
+    interval: 30
+    amount: 5
+
+  # Violation Thresholds
+  # 违规次数:
+  commands:
+    4: 'matrix notify %player% 发送垃圾邮件(ChatSpam)'
+    10: 'ban %player% 1m 不要在聊天中发送垃圾邮件!'
+
+## 交互
+# 检查阻止玩家与实体和方块进行非法互动
+interact:
+  # 启用这个检查?
+  enable: true
+
+  # 应该使用哪个版本的交互检查?
+  # V1 =旧版本
+  # V2 =新版本(仅支持1.8/1.12/1.19+)
+  mode: "v2"
+
+  check_interact_block: true
+  check_attack: true
+
+  # 自定义vl衰减间隔(秒)和vl衰减步长
+  decay:
+    interval: 10
+    amount: 5
+
+  # Violation Thresholds
+  # 违规次数:
+  commands:
+    10: 'matrix notify %player% 试图非法与实体/块交互(交互)'
+    15: 'ban %player% 3h 试图非法与实体/块交互(交互)'
+
+## 阶段
+# 检查可以防止玩家通过方块时出现故障。
+phase:
+  # 启用这个检查?
+  enable: true
+
+  # Matrix应该阻止玩家移动多长时间
+  # 玩家频繁尝试移动方块?(毫秒)
+  freeze_time: 400
+
+  # 违规行为需要取消非法移动
+  cancel_vl: 5
+
+  # Matrix是否应该阻止玩家使用末影珍珠进行近距离传送?
+  prevent_close_range_enderpearl: true
+
+  # 排除块类型
+  exclude_types: []
+
+  # 自定义vl衰减间隔(秒)和vl衰减步长
+  decay:
+    interval: 15
+    amount: 10
+
+  # 违反阈值
+  # 违规次数:
+  commands:
+    7: 'matrix notify %player% is phase into block (Phase)'
+    13: 'matrix notify %player% is phase into block (Phase) #2'
+
+## 自动机器人
+# 检查阻止玩家使用一些Bot mod，如Baritone
+# 注意:此检查仅适用于高级用户!!(付款99元！)
+autobot:
+  # 启用这个检查?
+  enable: true
+
+  #自定义vl衰减间隔(秒)和vl衰减步长
+  decay:
+    interval: 15
+    amount: 2
+
+  # 违反阈值
+  # 违规次数:
+  commands:
+    5: 'matrix notify %player% 怀疑使用自动机器人(AutoBot)'
+    10: 'matrix notify %player% 怀疑使用自动机器人(AutoBot) #2'
+    15: 'ban %player% 1h 非法使用自动机器人'
+
+## 翅鞘
+# 检查阻止玩家使用Elytra+， ElytraFlight等
+# 仅适用于1.9以上
+elytra:
+  # 启用这个检查?
+  enable: true
+
+  # Matrix是否应该被迫撤回那些特别优秀的玩家
+  # 作弊?即使它们没有到达cancel_vl(默认值:true)
+  force_setback: true
+
+  # 挫折违反级别(-1 =从不挫折)
+  setback_vl: 5
+
+  # 解除鞘翅VL
+  # 如果玩家到达这个VL，矩阵将使它脱离滑动状态(-1 =禁用此功能)
+  unequip_vl: 20
+
+  # 自定义vl衰减间隔(秒)和vl衰减步长
+  decay:
+    interval: 15
+    amount: 7
+
+  # 违反阈值
+  # 违规次数:
+  commands:
+    10: 'matrix notify %player% 怀疑使用鞘翅非法飞行(elytra)'
+    20: 'matrix notify %player% 怀疑使用鞘翅非法飞行(elytra) #2'
+    40: 'ban %player% 1h 检测到不公平客户端(鞘翅非法飞行)'
+
+## Vehicle
+# Checks prevents player using VehicleFlight, VehicleSpeed, EntitySpeed..
+# Only works for 1.9+
+vehicle:
+  # 启用这个检查?
+  enable: true
+
+  # 禁止玩家使用某些生物作为交通工具
+  # 所有实体类型: https://hub.spigotmc.org/javadocs/spigot/org/bukkit/entity/EntityType.html
+  deny_entity_types_as_vehicle:
+    - 'LLAMA'
+
+  # Vehicle速度/实体速度
+  speed:
+    # 启用该模块?
+    enable: true
+
+    # 挫折VL(-1 =禁用挫折)
+    setback_vl: 2
+
+  # Vehicle飞行/船只飞行
+  flight:
+    # 启用该模块?
+    enable: true
+
+    # 挫折vl(-1 =从不挫折)
+    setback_vl: 4
+
+    # 离开车辆vl(-1 =从不离开车辆)
+    leave_vehicle: 10
+
+  # 自定义vl衰减间隔(秒)和vl衰减步长
+  decay:
+    interval: 15
+    amount: 5
+
+  # 违反阈值
+  # 违规次数:
+  commands:
+    5: 'matrix notify %player% 怀疑使用vehicle作弊(vehicle)'
+    10: 'matrix notify %player% 怀疑使用vehicle作弊(vehicle) #2'
+    17: 'ban %player% 1h 可疑vehicle移动'
