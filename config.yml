@@ -21,7 +21,7 @@ check_update: true
 
 # 写你的正版matrix授权密钥 https://cp.rerere.me 里面要
 # 没有将是用不了matrix
-access_token: 'bm7ME2zmwpUSMWTeZvaJOxw4S5FYMNpd'
+access_token: ''
 
 # Permission Cache刷新间隔(单位:秒，默认值:15)
 permission_refresh_interval: 15
