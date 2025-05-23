@@ -10,7 +10,7 @@
 #        “VL”是“违规级别”的缩写. 当玩家被反作弊标记为作弊时，反作弊会提高玩家的违规级别。
 #    当玩家的VL达到下面“命令”节点中的值时，将执行相应的命令。
 #
-#  无论如何，感谢使用 Matrix 反作弊!?
+#  无论如何，感谢使用 Matrix 反作弊!
 #
 #####################################################################################
 
@@ -50,7 +50,6 @@ killaura:
       check_aimbot_sensitivity: true
       check_aimbot_acceleration: true
       check_aimbot_bad_rotation: true
-      check_aimbot_mouse_speed: true
 
     # KillAura NPC检查，它会在玩家后面生成一个假玩家来检测
     # 如果玩家使用KillAura，别担心，玩家只能看到自己的NPC
@@ -230,12 +229,12 @@ move:
   # 当玩家到达这个VL时，开始拉回玩家的异常移动
   cancel_vl: 35
 
-  # 当玩家受到挫折时，Matrix是否应该对玩家施加伤害?
+  # 当玩家受到踢出时，Matrix是否应该对玩家施加伤害?
   apply_damage: true
 
   # Matrix是否允许玩家站在取消的方块上?
-  # 我建议不要打开它，它会稍微影响性能
-  # 造成了一些旁路。
+  # 建议不要打开它，它会稍微影响性能
+  # 进行分流
   # https://www.youtube.com/watch?v=9lNXNW6Phk0&t=133s
   allow_bpe_bridge: false
 
@@ -244,7 +243,7 @@ move:
   check_flying_players: false
 
   # 如果Matrix认为玩家一定在作弊，Matrix就会忽略
-  # 当前的VL和直接挫折玩家。但这并不是100%准确.
+  # 当前的VL和直接踢出玩家。但这并不是100%准确.
   # 所以你可以选择哪些情境Matrix会迫使玩家受挫
   force_setback_situations:
     high_jump: true
@@ -277,7 +276,7 @@ badpackets:
 
   # 定时器检查设置
   timer:
-    # 用旧计时器来检查?它更稳定，但更弱(不推荐)
+    # 用旧计时器来检查? 更稳定，但更弱(不推荐)
     use_legacy_timer_check: false
 
     # 最小计时器平衡值(节拍)
@@ -371,7 +370,7 @@ block:
   # 违规次数:
   commands:
     10: 'matrix notify %player% 试图过快地放置/打破一个方块(快速放置/快攻)'
-    20: 'ban %player% 1h FastPlace /快攻黑客'
+    20: 'ban %player% 1h 不公平客户端 FastPlace/快攻'
 
 ## 脚手架检查
 # 检查阻止玩家桥接方块或比正常速度更快
@@ -419,7 +418,7 @@ scaffold:
   commands:
     10: 'matrix notify %player% 试图自动搭路(自动搭路)'
     15: 'matrix notify %player% 试图自动搭路(自动搭路) #2'
-    24: 'ban %player% 1h 自动搭路/塔'
+    24: 'ban %player% 1h 不公平客户端(自动搭路)'
 
 ## Jesus
 # 防止玩家在液体中过快移动或在液体上行走。
@@ -444,7 +443,7 @@ jesus:
   commands:
     20: 'matrix notify %player% 试图在液体中非法移动 (Jesus)'
     40: 'matrix notify %player% 试图在液体中非法移动 (Jesus) #2'
-    50: 'ban %player% 1h 检测到不公平客户端(非法移动)'
+    50: 'ban %player% 1h 不公平客户端(不正常的移动)'
 
 ## 速度
 # 检查阻止玩家使用任何类型的反击退技巧。
@@ -477,7 +476,7 @@ velocity:
   commands:
     10: 'matrix notify %player% 试图忽略服务器速度(velocity)'
     15: 'matrix notify %player% 试图忽略服务器速度(velocity) #2'
-    20: 'ban %player% 2h 速度/ Anti-Knockback'
+    20: 'ban %player% 2h 不公平客户端(速度/Anti-Knockback)'
 
 ## Spam
 # 检查可以防止玩家在服务器聊天中发送垃圾信息
@@ -559,7 +558,7 @@ phase:
 
 ## 自动机器人
 # 检查阻止玩家使用一些Bot mod，如Baritone
-# 注意:此检查仅适用于高级用户!!(付款99元！)
+# 注意:此检查仅适用于高级用户!!(付款99r！)
 autobot:
   # 启用这个检查?
   enable: true
@@ -574,7 +573,7 @@ autobot:
   commands:
     5: 'matrix notify %player% 怀疑使用自动机器人(AutoBot)'
     10: 'matrix notify %player% 怀疑使用自动机器人(AutoBot) #2'
-    15: 'ban %player% 1h 非法使用自动机器人'
+    15: 'ban %player% 1h 不公平客户端(自动机器人)'
 
 ## 翅鞘
 # 检查阻止玩家使用Elytra+， ElytraFlight等
@@ -587,7 +586,7 @@ elytra:
   # 作弊?即使它们没有到达cancel_vl(默认值:true)
   force_setback: true
 
-  # 挫折违反级别(-1 =从不挫折)
+  # 踢出违反级别(-1 =从不踢出)
   setback_vl: 5
 
   # 解除鞘翅VL
@@ -606,9 +605,9 @@ elytra:
     20: 'matrix notify %player% 怀疑使用鞘翅非法飞行(elytra) #2'
     40: 'ban %player% 1h 检测到不公平客户端(鞘翅非法飞行)'
 
-## Vehicle
-# Checks prevents player using VehicleFlight, VehicleSpeed, EntitySpeed..
-# Only works for 1.9+
+## 实体速度
+# 检查阻止玩家使用车辆飞行，车辆速度，实体速度..
+# 只适用于1.9+
 vehicle:
   # 启用这个检查?
   enable: true
@@ -623,7 +622,7 @@ vehicle:
     # 启用该模块?
     enable: true
 
-    # 挫折VL(-1 =禁用挫折)
+    # 等级VL(-1 =禁用等级)
     setback_vl: 2
 
   # Vehicle飞行/船只飞行
@@ -631,7 +630,7 @@ vehicle:
     # 启用该模块?
     enable: true
 
-    # 挫折vl(-1 =从不挫折)
+    # 踢出vl(-1 =从不踢出)
     setback_vl: 4
 
     # 离开车辆vl(-1 =从不离开车辆)
@@ -645,6 +644,6 @@ vehicle:
   # 违反阈值
   # 违规次数:
   commands:
-    5: 'matrix notify %player% 怀疑使用vehicle作弊(vehicle)'
-    10: 'matrix notify %player% 怀疑使用vehicle作弊(vehicle) #2'
-    17: 'ban %player% 1h 可疑vehicle移动'
+    5: 'matrix notify %player% 怀疑使用实体速度异常/vehicle作弊(vehicle)'
+    10: 'matrix notify %player% 怀疑使用实体速度异常/vehicle作弊(vehicle) #2'
+    17: 'ban %player% 1h 不公平客户端(实体速度异常/vehicle)'
