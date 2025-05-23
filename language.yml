@@ -1,15 +1,15 @@
-#### Matrix Config - language.yml ##################################################
+#### Matrix 配置 - language.yml ###############################################
 #
-#     Hi, welcome to use Matrix anti-cheat, this is language.yml, which is used
-#  to define the display language of anti-cheat. Here you can define what message
-#  the anti-cheat displays.
+#     本翻译由kxkl(Q号198095872)如有翻译问题，不要骂我们QAQ
+#     你好，欢迎使用 Matrix 反作弊系统，这里是 language.yml 文件，
+#  用于定义反作弊系统的显示语言。您可以在此定义反作弊系统显示的消息内容。
 #
-#  - If you encounter any problems, please go to our official Discord
-#  group for help: https://discord.gg/pEvY55J
+#  - 如果遇到任何问题，请前往我们的官方 Discord 群组寻求帮助：
+#    https://discord.gg/pEvY55J
 #
-#  Anyway, thanks for using Matrix anticheat! �?
+#  无论如何，感谢您使用 Matrix 反作弊系统！  ?
 #
-#####################################################################################
+###################################################################################
 
 # You can define the message prefix here
 prefix: '&7[&bMatrix&7]&r '
@@ -17,34 +17,32 @@ prefix: '&7[&bMatrix&7]&r '
 # Define the announcement message after the player is kicked out by anti-cheating
 kick-format: 玩家 %player% 因为作弊被踢出了!
 
-# Should Matrix broadcast a message when a player is kicked?
+# 当玩家被踢出时，Matrix是否应该广播一条消息？
 kick-broadcast: true
 
-# What message should send to the player when Matrix detects
-# that the player is sending chat messages too fast?
+# 当Matrix检测到玩家发送聊天消息过快时，
+# 应该向玩家发送什么提示消息？
 spam-warning: 你不能聊天那么快或发送相同的内容!
 
-# Define the format of the verbose message
+# 定义 verbose（详细）消息的格式
 #
-#  What is "verbose message"?
-#    When the player is detected by Matrix for any cheating, Matrix will output a
-#    debugging message to display the detection information, which will be useful
-#    for developers to debug anti-cheat. You can toggle it with the "/matrix verbose"
-#    command, but usually you don’t need to read this message, it usually only needs
-#    to be used when reporting a bug.
+#  什么是 "verbose message"（详细消息）？
+#    当玩家被 Matrix 反作弊检测到作弊时，Matrix 会输出一条调试信息，
+#    用于显示检测详情。这些信息对开发者调试反作弊系统很有帮助。
+#    你可以使用 "/matrix verbose" 命令切换显示，但通常不需要关注这些消息，
+#    它们一般仅在提交 Bug 报告时有用。
 #
-verbose-format: '&7%player% failed &2%check% &7check &8| &7%message%(%tooltips%) &8|
-  &7vl:%vl%&b(+%add_vl%) &7ping:%ping% tps:%tps% component: %component% ver: %version%'
+verbose-format: '&7%player% 未通过 &2%check% &7检测 &8| &7%message%(%tooltips%) &8|
+  &7vl:%vl%&b(+%add_vl%) &7ping:%ping% tps:%tps% 组件: %component% 版本: %version%'
 
-# Defines the message that matrix blocks it when the player tries to quickly
-# reconnect to the server after being kicked out by the anti-cheat
+# 定义当玩家被反作弊踢出后尝试快速重连服务器时，Matrix 拦截该行为时显示的消息
 relog-message: 重新登录前请等待 %time_left% 秒!
 
-# Global Placeholders, you can define constants here, you can use them in checks.yml
-#
-#  For example, define:
-#     kick_help: "If you think it's a false positive, you can contact the Mod to solve the false kick"
-#  then you can use %gp_kick_help% in checks.yml, It will be automatically replaced with this sentence
+# 全局占位符，你可以在此定义常量，并在 checks.yml 中使用它们  
+#  
+#  例如，定义：  
+#     kick_help: "如果你认为这是误判，可以联系管理员解决误踢问题"  
+#  然后在 checks.yml 中使用 %gp_kick_help%，它会被自动替换为这段文字  
 #
 global_placeholder: {}
 
